@@ -1,0 +1,1 @@
+!function(){"use strict";var e=window.wp.element;(0,window.wp.blocks.registerBlockType)("devnel/recipe-prototype-block",{title:"Recipe Block Prototype",icon:"carrot",category:"widgets",edit:()=>(0,e.createElement)("div",null,"Hola, mundo!"),save:()=>(0,e.createElement)("div",null,"Hola, mundo!")})}();
