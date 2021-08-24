@@ -25,10 +25,11 @@ defined('ABSPATH') || exit;
 /**
  * Load all translations for our plugin from the MO file.
 */
+add_action('init', 'devnel_recipe_prototype_load_textdomain');
+
 function devnel_recipe_prototype_load_textdomain() {
     load_plugin_textdomain('devnel-recipe-prototype', false, basename(__DIR__) . '/languages');
 }
-add_action('init', 'devnel_recipe_prototype_load_textdomain');
 
 /**
  * Enqueue JS and CSS
@@ -41,7 +42,7 @@ function devnel_recipe_prototype_register_block() {
     $asset_file = include(plugin_dir_path(__FILE__) . 'build/index.asset.php');
 
     wp_register_script(
-        'devnel-recipe-prototype',
+        "devnel-recipe-prototype",
         plugins_url('build/index.js', __FILE__),
         $asset_file['dependencies'],
         $asset_file['version']
