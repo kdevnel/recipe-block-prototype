@@ -32,6 +32,47 @@ function devnel_recipe_prototype_load_textdomain() {
 }
 
 /**
+ * Register a custom post type
+ *
+ * @return void
+ */
+function dvnl_recipe_post_type() {
+    register_post_type('dvnl_recipes',
+        array(
+            'labels'      => array(
+                'name'          => __('Recipes', 'devnel-recipe-prototype'),
+                'singular_name' => __('Recipe', 'devnel-recipe-prototype'),
+            ),
+            'public'      => true,
+            'has_archive' => true,
+            'rewrite'     => array( 'slug' => 'recipes' ),
+            'show_in_rest'=> true,
+            'menu_icon'   => 'dashicons-carrot',
+            'supports' => array(
+                'title',
+                'editor',
+                'custom-fields',
+            ),
+        )
+    );
+}
+add_action('init', 'dvnl_recipe_post_type');
+
+/**
+ * Register a post meta field
+ *
+ * @return void
+ */
+function dvnl_register_post_meta() {
+    register_post_meta( 'dvnl_recipes', 'dvnl_meta_block_ingredients', array(
+        'show_in_rest' => true,
+        'single' => true,
+        'type' => 'string',
+    ) );
+}
+add_action( 'init', 'dvnl_register_post_meta' );
+
+/**
  * Enqueue JS and CSS
  *
  * @return void

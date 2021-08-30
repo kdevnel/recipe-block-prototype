@@ -1,6 +1,8 @@
 import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
 import { useBlockProps, RichText } from "@wordpress/block-editor";
+import { useSelect } from "@wordpress/data";
+import { useEntityProp } from "@wordpress/core-data";
 import attributes from "./attributes";
 
 registerBlockType("devnel/recipe-prototype", {
@@ -34,6 +36,12 @@ registerBlockType("devnel/recipe-prototype", {
       className,
     } = props;
     const blockProps = useBlockProps();
+
+    const postType = useSelect(
+      (select) => select("core/editor").getCurrentPostType(),
+      []
+    );
+
     const onChangeTitle = (newValue) => {
       setAttributes({ title: newValue });
     };
@@ -46,6 +54,13 @@ registerBlockType("devnel/recipe-prototype", {
     const onChangeMethod = (newValue) => {
       setAttributes({ method: newValue });
     };
+
+    const [meta, setMeta] = useEntityProp("postType", postType, "meta");
+    const metaFieldValue = meta["dvnl_meta_block_ingredients"];
+
+    function updateMetaValue(newValue) {
+      setMeta({ ...meta, dvnl_meta_block_ingredients: newValue });
+    }
 
     return (
       <div {...blockProps}>
@@ -66,8 +81,8 @@ registerBlockType("devnel/recipe-prototype", {
           tagName="ul"
           multiline="li"
           placeholder={__("Add ingredients", "devnel-recipe-prototype")}
-          value={ingredients}
-          onChange={onChangeIngredients}
+          value={metaFieldValue}
+          onChange={updateMetaValue}
           className="ingredients"
         />
         <h3>{__("Method", "devnel-recipe-prototype")}</h3>
@@ -94,11 +109,11 @@ registerBlockType("devnel/recipe-prototype", {
         <RichText.Content tagName="h2" value={title} />
         <RichText.Content tagName="p" value={description} />
         <h3>{__("Ingredients", "devnel-recipe-prototype")}</h3>
-        <RichText.Content
+        {/* <RichText.Content
           tagName="ul"
           className="ingredients"
           value={ingredients}
-        />
+        /> */}
         <h3>{__("Method", "devnel-recipe-prototype")}</h3>
         <RichText.Content tagName="ol" className="method" value={method} />
       </div>
