@@ -1,0 +1,1 @@
+{"version":3,"file":"index.css","mappings":";;;AAAA;EACI;EACA;AACJ;AACI;EACI;AACR,C","sources":["webpack://recipe-prototype/./src/index.scss"],"sourcesContent":[".wp-block-devnel-recipe-prototype {\n    border: 1px solid #ededed;\n    padding: 1em;\n\n    h2 {\n        border-bottom: 1px solid #333;\n    }\n}"],"names":[],"sourceRoot":""}
