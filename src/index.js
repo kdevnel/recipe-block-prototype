@@ -35,11 +35,15 @@ registerBlockType("devnel/recipe-prototype", {
 function editComponent(props) {
   const {
     // makes it easier to reference attributes
-    attributes: { title, description, ingredients, method },
+    attributes: { recipeId },
     setAttributes,
     className,
   } = props;
   const blockProps = useBlockProps();
+
+  const onChangeRecipe = (e) => {
+    setAttributes({ recipeId: e.target.value });
+  };
 
   // select all the recipes on the site so we can use them
   const allRecipes = useSelect((select) => {
@@ -56,16 +60,11 @@ function editComponent(props) {
   return (
     <div {...blockProps}>
       <div className="recipe-select-container">
-        <select
-          onChange={(e) => props.setAttributes({ recipeId: e.target.value })}
-        >
+        <select onChange={onChangeRecipe}>
           <option value="">{"Select a recipe"}</option>
           {allRecipes.map((recipe) => {
             return (
-              <option
-                value={recipe.id}
-                selected={props.attributes.recipeId == recipe.id}
-              >
+              <option value={recipe.id} selected={recipeId == recipe.id}>
                 {recipe.title.rendered}
               </option>
             );

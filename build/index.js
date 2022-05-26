@@ -196,15 +196,19 @@ function editComponent(props) {
   const {
     // makes it easier to reference attributes
     attributes: {
-      title,
-      description,
-      ingredients,
-      method
+      recipeId
     },
     setAttributes,
     className
   } = props;
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)(); // select all the recipes on the site so we can use them
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)();
+
+  const onChangeRecipe = e => {
+    setAttributes({
+      recipeId: e.target.value
+    });
+  }; // select all the recipes on the site so we can use them
+
 
   const allRecipes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
     return select("core").getEntityRecords("postType", "family_recipe_book", {
@@ -217,15 +221,13 @@ function editComponent(props) {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "recipe-select-container"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    onChange: e => props.setAttributes({
-      recipeId: e.target.value
-    })
+    onChange: onChangeRecipe
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: ""
   }, "Select a recipe"), allRecipes.map(recipe => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
       value: recipe.id,
-      selected: props.attributes.recipeId == recipe.id
+      selected: recipeId == recipe.id
     }, recipe.title.rendered);
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, "The HTML preview of our recipe"));
 }
