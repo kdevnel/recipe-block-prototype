@@ -1,6 +1,7 @@
 import { __ } from "@wordpress/i18n";
 import { registerBlockType } from "@wordpress/blocks";
 import { useBlockProps, RichText } from "@wordpress/block-editor";
+import { useSelect } from "@wordpress/data";
 import attributes from "./attributes";
 import "./index.scss";
 
@@ -39,51 +40,39 @@ function editComponent(props) {
     className,
   } = props;
   const blockProps = useBlockProps();
-  const onChangeTitle = (newValue) => {
-    setAttributes({ title: newValue });
-  };
-  const onChangeDescription = (newValue) => {
-    setAttributes({ description: newValue });
-  };
-  const onChangeIngredients = (newValue) => {
-    setAttributes({ ingredients: newValue });
-  };
-  const onChangeMethod = (newValue) => {
-    setAttributes({ method: newValue });
-  };
+
+  // select all the recipes on the site so we can use them
+  const allRecipes = useSelect((select) => {
+    return select("core").getEntityRecords("postType", "family_recipe_book", {
+      per_page: -1,
+    });
+  });
+
+  console.log(allRecipes);
+
+  // stop running further until there are recipes
+  if (allRecipes == undefined) return <p>Loading recipes...</p>;
 
   return (
     <div {...blockProps}>
-      <RichText
-        placeholder={__("Add Recipe Title", "devnel-recipe-prototype")}
-        tagName="h2"
-        onChange={onChangeTitle}
-        value={title}
-      />
-      <RichText
-        placeholder={__("Add recipe description", "devnel-recipe-prototype")}
-        tagName="p"
-        onChange={onChangeDescription}
-        value={description}
-      />
-      <h3>{__("Ingredients", "devnel-recipe-prototype")}</h3>
-      <RichText
-        tagName="ul"
-        multiline="li"
-        placeholder={__("Add ingredients", "devnel-recipe-prototype")}
-        value={ingredients}
-        onChange={onChangeIngredients}
-        className="ingredients"
-      />
-      <h3>{__("Method", "devnel-recipe-prototype")}</h3>
-      <RichText
-        tagName="ol"
-        multiline="li"
-        placeholder={__("Add method steps", "devnel-recipe-prototype")}
-        value={method}
-        onChange={onChangeMethod}
-        className="method"
-      />
+      <div className="recipe-select-container">
+        <select
+          onChange={(e) => props.setAttributes({ recipeId: e.target.value })}
+        >
+          <option value="">{"Select a recipe"}</option>
+          {allRecipes.map((recipe) => {
+            return (
+              <option
+                value={recipe.id}
+                selected={props.attributes.recipeId == recipe.id}
+              >
+                {recipe.title.rendered}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <div>The HTML preview of our recipe</div>
     </div>
   );
 }

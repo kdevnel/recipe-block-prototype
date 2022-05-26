@@ -10,25 +10,8 @@
 
 __webpack_require__.r(__webpack_exports__);
 const attributes = {
-  title: {
-    type: "array",
-    source: "children",
-    selector: "h2"
-  },
-  description: {
-    type: "array",
-    source: "children",
-    selector: "p"
-  },
-  ingredients: {
-    type: "array",
-    source: "children",
-    selector: ".ingredients"
-  },
-  method: {
-    type: "array",
-    source: "children",
-    selector: ".method"
+  recipeId: {
+    type: "string"
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (attributes);
@@ -64,6 +47,16 @@ module.exports = window["wp"]["blockEditor"];
 /***/ (function(module) {
 
 module.exports = window["wp"]["blocks"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["data"];
 
 /***/ }),
 
@@ -170,8 +163,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _attributes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./attributes */ "./src/attributes.js");
-/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./index.scss */ "./src/index.scss");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _attributes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./attributes */ "./src/attributes.js");
+/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./index.scss */ "./src/index.scss");
+
 
 
 
@@ -183,7 +179,7 @@ __webpack_require__.r(__webpack_exports__);
   title: "Recipe Block Prototype",
   icon: "carrot",
   category: "widgets",
-  attributes: _attributes__WEBPACK_IMPORTED_MODULE_4__["default"],
+  attributes: _attributes__WEBPACK_IMPORTED_MODULE_5__["default"],
   example: {
     attributes: {
       title: "Magic Bean Soup",
@@ -208,57 +204,30 @@ function editComponent(props) {
     setAttributes,
     className
   } = props;
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)();
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)(); // select all the recipes on the site so we can use them
 
-  const onChangeTitle = newValue => {
-    setAttributes({
-      title: newValue
+  const allRecipes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
+    return select("core").getEntityRecords("postType", "family_recipe_book", {
+      per_page: -1
     });
-  };
+  });
+  console.log(allRecipes); // stop running further until there are recipes
 
-  const onChangeDescription = newValue => {
-    setAttributes({
-      description: newValue
-    });
-  };
-
-  const onChangeIngredients = newValue => {
-    setAttributes({
-      ingredients: newValue
-    });
-  };
-
-  const onChangeMethod = newValue => {
-    setAttributes({
-      method: newValue
-    });
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
-    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Add Recipe Title", "devnel-recipe-prototype"),
-    tagName: "h2",
-    onChange: onChangeTitle,
-    value: title
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
-    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Add recipe description", "devnel-recipe-prototype"),
-    tagName: "p",
-    onChange: onChangeDescription,
-    value: description
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Ingredients", "devnel-recipe-prototype")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
-    tagName: "ul",
-    multiline: "li",
-    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Add ingredients", "devnel-recipe-prototype"),
-    value: ingredients,
-    onChange: onChangeIngredients,
-    className: "ingredients"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Method", "devnel-recipe-prototype")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
-    tagName: "ol",
-    multiline: "li",
-    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Add method steps", "devnel-recipe-prototype"),
-    value: method,
-    onChange: onChangeMethod,
-    className: "method"
-  }));
+  if (allRecipes == undefined) return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Loading recipes...");
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "recipe-select-container"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    onChange: e => props.setAttributes({
+      recipeId: e.target.value
+    })
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: ""
+  }, "Select a recipe"), allRecipes.map(recipe => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: recipe.id,
+      selected: props.attributes.recipeId == recipe.id
+    }, recipe.title.rendered);
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, "The HTML preview of our recipe"));
 }
 
 function saveComponent(props) {

@@ -64,7 +64,11 @@ class DevnelRecipePrototype
 
     function renderCallback($block_attributes, $content)
     {
-        return generateRecipeHTML($block_attributes, $content);
+        if ($block_attributes['recipeId']) {
+            return generateRecipeHTML($block_attributes['recipeId']);
+        } else {
+            return null;
+        }
     }
 }
 
