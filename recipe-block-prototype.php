@@ -23,6 +23,8 @@
 //  Exit if accessed directly.
 defined('ABSPATH') || exit;
 
+require_once plugin_dir_path(__FILE__) . 'inc/generateRecipeHTML.php';
+
 class DevnelRecipePrototype
 {
     function __construct()
@@ -60,9 +62,9 @@ class DevnelRecipePrototype
         ));
     }
 
-    function renderCallback($attributes)
+    function renderCallback($block_attributes, $content)
     {
-        echo ("We will replace this soon");
+        return generateRecipeHTML($block_attributes, $content);
     }
 }
 
