@@ -210,26 +210,35 @@ function editComponent(props) {
   }; // select all the recipes on the site so we can use them
 
 
-  const allRecipes = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
+  const allRecipePosts = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
     return select("core").getEntityRecords("postType", "family_recipe_book", {
       per_page: -1
     });
-  });
-  console.log(allRecipes); // stop running further until there are recipes
+  }, []); // select current recipe
 
-  if (allRecipes == undefined) return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Loading recipes...");
+  const currentSelectedRecipe = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
+    return select("core").getEntityRecord("postType", "family_recipe_book", recipeId);
+  }, []);
+  console.log(currentSelectedRecipe); // stop running further until there are recipes
+
+  if (allRecipePosts == undefined) return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Loading recipes...");
+  if (allRecipePosts && allRecipePosts.length === 0) return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "No recipes available.");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "recipe-select-container"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     onChange: onChangeRecipe
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: ""
-  }, "Select a recipe"), allRecipes.map(recipe => {
+  }, "Select a recipe"), allRecipePosts.map(recipe => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
       value: recipe.id,
       selected: recipeId == recipe.id
     }, recipe.title.rendered);
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, "The HTML preview of our recipe"));
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    class: "recipe-content__container"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, currentSelectedRecipe && currentSelectedRecipe.title.rendered), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, currentSelectedRecipe && currentSelectedRecipe.content.rendered), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: currentSelectedRecipe && currentSelectedRecipe.link
+  }, "See the full", " ", currentSelectedRecipe && currentSelectedRecipe.title.rendered, " ", "recipe \xBB")))));
 }
 
 function saveComponent(props) {

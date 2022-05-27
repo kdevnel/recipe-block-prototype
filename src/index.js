@@ -46,23 +46,33 @@ function editComponent(props) {
   };
 
   // select all the recipes on the site so we can use them
-  const allRecipes = useSelect((select) => {
+  const allRecipePosts = useSelect((select) => {
     return select("core").getEntityRecords("postType", "family_recipe_book", {
       per_page: -1,
     });
-  });
+  }, []);
 
-  console.log(allRecipes);
+  // select current recipe
+  const currentSelectedRecipe = useSelect((select) => {
+    return select("core").getEntityRecord(
+      "postType",
+      "family_recipe_book",
+      recipeId
+    );
+  }, []);
+  console.log(currentSelectedRecipe);
 
   // stop running further until there are recipes
-  if (allRecipes == undefined) return <p>Loading recipes...</p>;
+  if (allRecipePosts == undefined) return <p>Loading recipes...</p>;
+  if (allRecipePosts && allRecipePosts.length === 0)
+    return <p>No recipes available.</p>;
 
   return (
     <div {...blockProps}>
       <div className="recipe-select-container">
         <select onChange={onChangeRecipe}>
           <option value="">{"Select a recipe"}</option>
-          {allRecipes.map((recipe) => {
+          {allRecipePosts.map((recipe) => {
             return (
               <option value={recipe.id} selected={recipeId == recipe.id}>
                 {recipe.title.rendered}
@@ -71,7 +81,19 @@ function editComponent(props) {
           })}
         </select>
       </div>
-      <div>The HTML preview of our recipe</div>
+      <div class="recipe-content__container">
+        <h2>{currentSelectedRecipe && currentSelectedRecipe.title.rendered}</h2>
+        <p>{currentSelectedRecipe && currentSelectedRecipe.content.rendered}</p>
+        <p>
+          <strong>
+            <a href={currentSelectedRecipe && currentSelectedRecipe.link}>
+              See the full{" "}
+              {currentSelectedRecipe && currentSelectedRecipe.title.rendered}{" "}
+              recipe &raquo;
+            </a>
+          </strong>
+        </p>
+      </div>
     </div>
   );
 }
